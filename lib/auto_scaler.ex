@@ -17,14 +17,14 @@ defmodule AutoScaler do
     {:ok, %{counter: 0}}
   end
 
-#  REDO ALL THIS BOT FOR OUR USE
+#  REDO ALL THIS BIT FOR OUR USE
   def handle_info(:work, state) do
-    desired_nb_workers = 1 + div(state.counter, 15)
-    actual_nb_workers = SentimentAnalysis.Supervisor.get_nb_children()
+    desired_number_workers = 1 + div(state.counter, 15)
+#    TO DO: define get_nb_children() method
+#    actual_number_workers will get the current number of workers from the TopSupervisor
 
-    diff = abs(desired_nb_workers - actual_nb_workers)
-    scale(:sentiment, desired_nb_workers > actual_nb_workers, diff)
-    scale(:engagement, desired_nb_workers > actual_nb_workers, diff)
+    diff = abs(desired_number_workers - actual_number_workers)
+#    scale(:sentiment, desired_number_workers > actual_nb_workers, diff)
 
     schedule_work()
     {:noreply, %{counter: 0}}

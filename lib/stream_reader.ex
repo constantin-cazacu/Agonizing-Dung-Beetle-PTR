@@ -2,7 +2,7 @@ defmodule StreamReader do
   @moduledoc false
 
   def start_link(url) do
-    IO.inspect("starting server conn")
+    IO.inspect("starting Stream Reader")
     IO.puts(url)
     #    spawns get_tweet function from the given module, links it to current process
     handle = spawn_link(__MODULE__, :get_tweet, [])
@@ -15,7 +15,11 @@ defmodule StreamReader do
 
   def get_tweet() do
     receive do
-      AutoScaler.receive_data()
+      tweet ->
+#      notifies AutoScaler
+#      AutoScaler.receive_data()
+#      TO DO: add sending tweet to Load Balancer
+        LoadBalancer.receive_tweet(tweet)
     end
     get_tweet()
   end
