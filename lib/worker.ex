@@ -3,8 +3,8 @@ defmodule Worker do
   use GenServer
 
   #  client side functions
-  def start_link() do
-    GenServer.start_link(__MODULE__, %{}, name:__MODULE__)
+  def start_link(index) do
+    GenServer.start_link(__MODULE__, %{index: index}, [name: :"Worker#{index}"])
   end
 
   #  server side functions / callbacks

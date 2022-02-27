@@ -4,30 +4,33 @@ defmodule PoolSupervisor do
 
   def start_link() do
     pool_supervisor = DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+    Supervisor.start_child(4)
   end
 
   def get_worker_number() do
     DynamicSupervisor.count_children(__MODULE__).active
   end
 
-  def start_child(0) do
+  def start_worker(0) do
 
   end
 
-  def start_child(n) do
+  def start_worker(n) do
     index = DynamicSupervisor.count_children(__MODULE__).active
     DynamicSupervisor.start_child(__MODULE__, {Worker, index})
-    start_child(n-1)
+    start_worker(n-1)
   end
 
-  def stop_child(0) do
+  def stop_worker(0) do
 
   end
 
-  def stop_child(n) do
+  def stop_worker(n) do
     IO.puts("Terminating worker")
     index = get_worker_number() - 1
     worker_pid = get_worker_pid() # TO DO: create this private method
+    DynamicSupervisor.terminate_child(__MODULE__, worker_pid)
+    stop_worker(n-1)
   end
 
   defp get_worker_pid(name) do
@@ -35,7 +38,7 @@ defmodule PoolSupervisor do
   end
 
   def init(:ok) do
-    DynamicSupervisor.init(children, startegy: :one_for_one)
+    DynamicSupervisor.init(startegy: :one_for_one)
   end
 
 end

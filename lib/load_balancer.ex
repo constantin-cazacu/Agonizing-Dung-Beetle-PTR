@@ -8,7 +8,7 @@ defmodule LoadBalancer do
   end
 
   def receive_tweet(tweet) do
-    GenServer.cast(__MODULE__, {:rcv_tweet, tweet})
+    GenServer.cast(__MODULE__, {:receive_tweet, tweet})
   end
 
   #  server side functions / callbacks
@@ -16,9 +16,15 @@ defmodule LoadBalancer do
     {:ok, []}
   end
 
-  def handle_cast({:rcv_tweet, tweet}, _state) do
-    {:noreply, []}
+  def handle_cast({:receive_tweet, tweet}, state) do
 #    TO DO: find out how to send to a list of current workers
+    index = &PoolSupervisor.get_worker_number()
+#    TO DO: use created index to send to a certain worker#[index] a task
+#    and decrement current index
+#    plus create a case for when n = 0
+
+
+    {:noreply, []}
   end
 
 
