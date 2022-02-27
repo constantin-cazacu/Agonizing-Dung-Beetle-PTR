@@ -19,12 +19,12 @@ defmodule AutoScaler do
 
 #  REDO ALL THIS BIT FOR OUR USE
   def handle_info(:work, state) do
-    desired_number_workers = 1 + div(state.counter, 15)
-#    TO DO: define get_nb_children() method
+#    TO DO: define get_worker_number() method for the ctual number of workers
+#           define a desired number of workers
 #    actual_number_workers will get the current number of workers from the TopSupervisor
 
-    diff = abs(desired_number_workers - actual_number_workers)
-#    scale(:sentiment, desired_number_workers > actual_nb_workers, diff)
+    diff = abs(desired_worker_number - actual_number_workers)
+#    TO DO: scaling method
 
     schedule_work()
     {:noreply, %{counter: 0}}

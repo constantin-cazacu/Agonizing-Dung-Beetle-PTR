@@ -16,9 +16,9 @@ defmodule StreamReader do
   def get_tweet() do
     receive do
       tweet ->
-#      notifies AutoScaler
-#      AutoScaler.receive_data()
-#      TO DO: add sending tweet to Load Balancer
+#       notifies AutoScaler
+        AutoScaler.receive_data()
+#       sending tweet to Load Balancer
         LoadBalancer.receive_tweet(tweet)
     end
     get_tweet()
