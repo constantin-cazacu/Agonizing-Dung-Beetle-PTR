@@ -4,7 +4,9 @@ defmodule LoadBalancer do
 
   #  client side functions
   def start_link() do
-    GenServer.start_link(__MODULE__, %{}, name:__MODULE__)
+    GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
+    IO.inspect("starting Load Balancer")
+
   end
 
   def receive_tweet(tweet) do
@@ -20,8 +22,10 @@ defmodule LoadBalancer do
 #    TO DO: use created index to send to a certain worker#[index] a task
 #    and decrement current index
 #    plus create a case for when n = 0
-    index = &PoolSupervisor.get_worker_number()
-    send_to_worker(index, tweet)
+#    IO.puts(tweet)
+
+#    index = &PoolSupervisor.get_worker_number()
+#    send_to_worker(index, tweet)
 
     {:noreply, []}
   end

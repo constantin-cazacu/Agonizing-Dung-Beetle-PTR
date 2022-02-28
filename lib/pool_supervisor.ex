@@ -4,6 +4,7 @@ defmodule PoolSupervisor do
 
   def start_link() do
     pool_supervisor = DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+    IO.inspect("starting Pool Supervisor")
     Supervisor.start_child(4)
   end
 
@@ -33,7 +34,7 @@ defmodule PoolSupervisor do
     stop_worker(n-1)
   end
 
-  defp get_worker_pid(name) do
+  defp get_worker_pid() do
 
   end
 
