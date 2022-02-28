@@ -17,16 +17,28 @@ defmodule LoadBalancer do
   end
 
   def handle_cast({:receive_tweet, tweet}, state) do
-#    TO DO: find out how to send to a list of current workers
-    index = &PoolSupervisor.get_worker_number()
 #    TO DO: use created index to send to a certain worker#[index] a task
 #    and decrement current index
 #    plus create a case for when n = 0
-
+    index = &PoolSupervisor.get_worker_number()
+    send_to_worker(index, tweet)
 
     {:noreply, []}
   end
 
+# CURRENT ISSUE: gotta find a way to send to worker and update to the next tweet to be sent
+  defp send_to_worker(index, tweet) do
+    send(get_worker_name(index), tweet)
+    send_to_worker(index-1, tweet)
+  end
+
+  defp send_to_worker(0, tweet) do
+
+  end
+
+  defp get_worker_name(index) do
+    String.to_atom("Worker" <> Integer.to_string(index))
+  end
 
 
 end
