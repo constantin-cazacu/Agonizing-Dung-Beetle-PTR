@@ -3,13 +3,18 @@ defmodule AgonizingDungBeetlePTR do
 
   @impl true
   def start(_type, _args) do
-    IO.puts("starting Application")
-    url = "http://localhost:4000/tweets/1"
+    IO.inspect("starting Application")
+    url1 = "http://localhost:4000/tweets/1"
+    url2 = "http://localhost:4000/tweets/2"
 
     children = [
       %{
-      id: StreamReader,
-      start: {StreamReader, :start_link, [url]}
+      id: StreamReader1,
+      start: {StreamReader, :start_link, [url1]}
+      },
+      %{
+        id: StreamReader2,
+        start: {StreamReader, :start_link, [url2]}
       },
       %{
         id: LoadBalancer,

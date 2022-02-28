@@ -19,8 +19,8 @@ defmodule StreamReader do
 #       notifies AutoScaler
 #        AutoScaler.receive_data()
 #       sending tweet to Load Balancer
-#        LoadBalancer.receive_tweet(tweet)
-        IO.puts(tweet)
+        LoadBalancer.receive_tweet(tweet)
+#        IO.inspect(tweet)
     end
     get_tweet()
   end

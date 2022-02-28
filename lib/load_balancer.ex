@@ -22,7 +22,13 @@ defmodule LoadBalancer do
 #    TO DO: use created index to send to a certain worker#[index] a task
 #    and decrement current index
 #    plus create a case for when n = 0
-#    IO.puts(tweet)
+
+    tweet
+    |> Jason.decode()
+    |> Map.get("Message")
+    |> IO.inspect()
+
+#    IO.inspect(tweet)
 
 #    index = &PoolSupervisor.get_worker_number()
 #    send_to_worker(index, tweet)
