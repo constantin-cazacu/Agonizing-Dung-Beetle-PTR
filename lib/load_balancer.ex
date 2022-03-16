@@ -5,9 +5,8 @@ defmodule LoadBalancer do
 
   #  client side functions
   def start_link() do
-    state = %{index: 0, workers: []}
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
-    Logger.info("starting Load Balancer")
+    Logger.info("Starting Load Balancer")
+    GenServer.start_link(__MODULE__, %{index: 0, workers: []}, name: __MODULE__)
   end
 
   def receive_tweet(tweet) do
@@ -21,11 +20,13 @@ defmodule LoadBalancer do
 
   def handle_cast({:receive_tweet, tweet}, state) do
 #    sending tweet to worker in a Round Robin fashion
-    %{workers, index} = state
-    if length(workers) > 0 do
-      Enum.at(workers, rem(index, length(workers)))
-      |> Genserver.cast({:forward_tweet, tweet})
-    end
+    %{workers: workers, index: index} = state
+    Worker.receive_tweet(:Worker1, tweet)
+
+#    if length(workers) > 0 do
+#      Enum.at(workers, rem(index, length(workers)))
+#      |> Worker.receive_tweet(pid, tweet)
+#    end
 
 #    IO.inspect(tweet)
     {:noreply, %{state | index: index + 1}}

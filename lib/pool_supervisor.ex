@@ -25,14 +25,9 @@ defmodule PoolSupervisor do
     start_worker(n-1)
   end
 
-#  def stop_worker(worker_pid) do
-##    TODO: find a way to communicate state between Pool Supervisor and Load Balancer
-#    Process.send_after(self(), {:kill_worker, worker_pid}, 3000)
-#  end
-
   def init(_) do
     supervisor = DynamicSupervisor.init(max_children: 1000, strategy: :one_for_one)
-#    PoolSupervisor.start_worker(4)
+    PoolSupervisor.start_worker(4)
     supervisor
   end
 
