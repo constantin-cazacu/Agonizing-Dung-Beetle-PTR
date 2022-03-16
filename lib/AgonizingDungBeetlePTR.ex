@@ -24,6 +24,10 @@ defmodule AgonizingDungBeetlePTR do
         id: PoolSupervisor,
         start: {PoolSupervisor, :start_link, []}
       },
+#      %{
+#        id: Worker,
+#        start: {Worker, :start_link, [2]}
+#      },
     ]
 
     opts = [strategy: :one_for_one, max_restarts: 100, name: __MODULE__]

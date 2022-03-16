@@ -1,11 +1,12 @@
 defmodule PoolSupervisor do
   @moduledoc false
   use DynamicSupervisor
+  require Logger
 
   def start_link() do
-    pool_supervisor = DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+    supervisor = DynamicSupervisor.start_link(__MODULE__, %{}, name: __MODULE__)
     IO.inspect("starting Pool Supervisor")
-    Supervisor.start_child(4)
+    supervisor
   end
 
   def get_worker_number() do
@@ -13,33 +14,26 @@ defmodule PoolSupervisor do
   end
 
   def start_worker(0) do
-
+    :ok
   end
 
   def start_worker(n) do
-    index = DynamicSupervisor.count_children(__MODULE__).active
-    DynamicSupervisor.start_child(__MODULE__, {Worker, index})
+#    TODO: re-make logic here to keep a record of workers
+    index = get_worker_number()
+    DynamicSupervisor.start_child(__MODULE__, {Worker, index + 1})
+    Logger.info("Pool Supervisor added Worker No.#{index + 1}}}")
     start_worker(n-1)
   end
 
-  def stop_worker(0) do
+#  def stop_worker(worker_pid) do
+##    TODO: find a way to communicate state between Pool Supervisor and Load Balancer
+#    Process.send_after(self(), {:kill_worker, worker_pid}, 3000)
+#  end
 
-  end
-
-  def stop_worker(n) do
-    IO.puts("Terminating worker")
-    index = get_worker_number() - 1
-    worker_pid = get_worker_pid() # TO DO: create this private method
-    DynamicSupervisor.terminate_child(__MODULE__, worker_pid)
-    stop_worker(n-1)
-  end
-
-  defp get_worker_pid() do
-
-  end
-
-  def init(:ok) do
-    DynamicSupervisor.init(startegy: :one_for_one)
+  def init(_) do
+    supervisor = DynamicSupervisor.init(max_children: 1000, strategy: :one_for_one)
+#    PoolSupervisor.start_worker(4)
+    supervisor
   end
 
 end
