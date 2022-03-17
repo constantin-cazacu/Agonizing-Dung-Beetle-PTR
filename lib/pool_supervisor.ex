@@ -30,7 +30,7 @@ defmodule PoolSupervisor do
   end
 
   def init(_) do
-    supervisor = DynamicSupervisor.init(max_children: 1000, strategy: :one_for_one)
+    supervisor = DynamicSupervisor.init(max_restarts: 100, max_children: 1000, strategy: :one_for_one)
     supervisor
   end
 

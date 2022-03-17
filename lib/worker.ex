@@ -15,6 +15,7 @@ defmodule Worker do
   end
 
   def receive_tweet(pid, tweet) do
+    #    TODO: put sleep time
     GenServer.cast(pid, {:forward_tweet, tweet})
   end
 
@@ -24,27 +25,15 @@ defmodule Worker do
       Process.exit(self(), :kill)
     end
 
-    IO.puts("worker with #{inspect(self())} says #{inspect(tweet)}")
+#    IO.puts("Worker #{inspect(self())} says #{inspect(tweet)}")
 
-#    {:ok, json} = Poison.decode(tweet)
-#    "Worker#{inspect(self())}}" <> " " <> json["message"]["tweet"]["text"] <> "\r\n"
-#    message = parse_tweet(tweet)
-#    TODO: put sleep time
+    {:ok, tweet_data} = Poison.decode(tweet)
+    tweet_msg = tweet_data["message"]["tweet"]["text"]
+    IO.puts("Worker #{inspect(self())} says #{inspect(tweet_msg)}")
 
-#    if message == :kill_worker do
-#      worker_pid = self()
-#      PoolSupervisor.stop_worker(worker_pid)
-#    end
     {:noreply, state}
   end
 
-#  defp parse_tweet(tweet) do
-#    if tweet == "{\"message\": panic}" do
-#      :kill_worker
-#    else
-#      {:ok, json} = Poison.decode(tweet)
-#      "Worker#{inspect(self())}}" <> " " <> json["message"]["tweet"]["text"] <> "\r\n"
-#    end
-#  end
+
 
 end

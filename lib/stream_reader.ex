@@ -19,7 +19,7 @@ defmodule StreamReader do
 #       notifies AutoScaler
 #        AutoScaler.receive_data()
 #       sending tweet to Load Balancer
-        LoadBalancer.receive_tweet(tweet)
+        LoadBalancer.receive_tweet(tweet.data)
 #        IO.inspect(tweet)
     end
     get_tweet()
@@ -34,5 +34,7 @@ defmodule StreamReader do
         {:ok, new_pid} = EventsourceEx.new(url, stream_to: handle)
         spawn_link(__MODULE__, :check_connection, [url, handle, new_pid])
     end
+    :ok
   end
+  #TODO: check on the restarting implementation for SSE client
 end

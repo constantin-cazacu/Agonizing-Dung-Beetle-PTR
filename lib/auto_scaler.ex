@@ -14,4 +14,5 @@ defmodule AutoScaler do
     {:ok, state}
   end
 
+#  TODO: autos scale full implementation
 end
