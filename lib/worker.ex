@@ -24,7 +24,7 @@ defmodule Worker do
       Process.exit(self(), :kill)
     end
 
-    IO.puts("worker with #{inspect(self())} says #{tweet}")
+    IO.puts("worker with #{inspect(self())} says #{inspect(tweet)}")
 
 #    {:ok, json} = Poison.decode(tweet)
 #    "Worker#{inspect(self())}}" <> " " <> json["message"]["tweet"]["text"] <> "\r\n"

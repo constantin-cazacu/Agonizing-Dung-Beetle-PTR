@@ -25,9 +25,12 @@ defmodule PoolSupervisor do
     start_worker(n-1)
   end
 
+  def get_worker_list() do
+    DynamicSupervisor.which_children(__MODULE__)
+  end
+
   def init(_) do
     supervisor = DynamicSupervisor.init(max_children: 1000, strategy: :one_for_one)
-    PoolSupervisor.start_worker(4)
     supervisor
   end
 
