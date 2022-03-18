@@ -30,6 +30,8 @@ defmodule Worker do
     {:ok, tweet_data} = Poison.decode(tweet)
     tweet_msg = tweet_data["message"]["tweet"]["text"]
     IO.puts("Worker #{inspect(self())} says #{inspect(tweet_msg)}")
+#    TODO: standard form for logs
+#    TODO: max char length
 
     {:noreply, state}
   end
