@@ -5,7 +5,8 @@ defmodule LoadBalancer do
 
   #  client side functions
   def start_link() do
-    Logger.info("Starting Load Balancer")
+    Logger.info(IO.ANSI.format([:yellow,"Starting Load Balancer"]))
+#    index = 0
     GenServer.start_link(__MODULE__, 0, name: __MODULE__)
   end
 

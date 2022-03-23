@@ -1,9 +1,10 @@
 defmodule StreamReader do
   @moduledoc false
+  require Logger
 
   def start_link(url) do
-    IO.inspect("starting Stream Reader")
-    IO.puts(url)
+    Logger.info(IO.ANSI.format([:yellow,"starting Stream Reader"]))
+    Logger.info(url)
     #    spawns get_tweet function from the given module, links it to current process
     handle = spawn_link(__MODULE__, :get_tweet, [])
     {:ok, pid} = EventsourceEx.new(url, stream_to: handle)
@@ -17,10 +18,9 @@ defmodule StreamReader do
     receive do
       tweet ->
 #       notifies AutoScaler
-#        AutoScaler.receive_data()
+        AutoScaler.receive_data()
 #       sending tweet to Load Balancer
         LoadBalancer.receive_tweet(tweet.data)
-#        IO.inspect(tweet)
     end
     get_tweet()
   end
@@ -36,5 +36,4 @@ defmodule StreamReader do
     end
     :ok
   end
-  #TODO: check on the restarting implementation for SSE client
 end

@@ -5,7 +5,7 @@ defmodule Worker do
 
   #  client side functions
   def start_link(index) do
-    Logger.info("Starting Worker")
+    Logger.info(IO.ANSI.format([:yellow,"Starting Worker"]))
     GenServer.start_link(__MODULE__, %{}, name: String.to_atom("Worker#{index}"))
   end
 
@@ -25,17 +25,11 @@ defmodule Worker do
       Process.exit(self(), :kill)
     end
 
-#    IO.puts("Worker #{inspect(self())} says #{inspect(tweet)}")
-
     {:ok, tweet_data} = Poison.decode(tweet)
     tweet_msg = tweet_data["message"]["tweet"]["text"]
-    IO.puts("Worker #{inspect(self())} says #{inspect(tweet_msg)}")
-#    TODO: standard form for logs
-#    TODO: max char length
+    IO.puts("Worker #{inspect(self())} says #{inspect(String.slice(tweet_msg, 0..50))}...")
 
     {:noreply, state}
   end
-
-
 
 end

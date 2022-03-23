@@ -10,3 +10,5 @@ LoadBalancer.receive_tweet("hiiii")
 PoolSupervisor.start_link()
 AutoScaler.start_link()
 AgonizingDungBeetlePTR.start()
+
+mix run --no-halt --eval ":observer.start"
