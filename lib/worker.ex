@@ -15,7 +15,6 @@ defmodule Worker do
   end
 
   def receive_tweet(pid, tweet) do
-    #    TODO: put sleep time
     GenServer.cast(pid, {:forward_tweet, tweet})
   end
 
@@ -27,6 +26,7 @@ defmodule Worker do
 
     {:ok, tweet_data} = Poison.decode(tweet)
     tweet_msg = tweet_data["message"]["tweet"]["text"]
+    Process.sleep(Enum.random(50..500))
     IO.puts("Worker #{inspect(self())} says #{inspect(String.slice(tweet_msg, 0..50))}...")
 
     {:noreply, state}
