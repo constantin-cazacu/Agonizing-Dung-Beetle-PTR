@@ -1,15 +1,22 @@
 defmodule StreamReader do
-  @moduledoc false
+  @moduledoc """
+  Stream Reader - an actor that reads the SSE streams and forwards information
+  """
   require Logger
 
   def start_link(url) do
     Logger.info(IO.ANSI.format([:yellow,"starting Stream Reader"]))
     Logger.info(url)
-    #    spawns get_tweet function from the given module, links it to current process
+    @doc """
+    spawns get_tweet function from the given module,
+    links it to current process
+    """
     handle = spawn_link(__MODULE__, :get_tweet, [])
     {:ok, pid} = EventsourceEx.new(url, stream_to: handle)
-
-    #    spawns check_connection function from the given module, links it to current process
+    @doc"""
+    spawns check_connection function from the given module,
+    links it to current process
+    """
     spawn_link(__MODULE__, :check_connection, [url, handle, pid])
     {:ok, self()}
   end
@@ -17,16 +24,18 @@ defmodule StreamReader do
   def get_tweet() do
     receive do
       tweet ->
-#       notifies AutoScaler
+#        notifies AutoScaler
         AutoScaler.receive_data()
-#       sending tweet to Load Balancer
+#        sends tweet data to Load Balancer
         LoadBalancer.receive_tweet(tweet.data)
     end
     get_tweet()
   end
 
+  @doc"""
+  starts monitoring the PID
+  """
   def check_connection(url, handle, pid) do
-#    starts monitoring the PID
     Process.monitor(pid)
     receive do
       _err ->

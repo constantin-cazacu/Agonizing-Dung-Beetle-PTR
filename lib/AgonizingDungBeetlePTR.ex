@@ -2,6 +2,13 @@ defmodule AgonizingDungBeetlePTR do
   use Application
   require Logger
 
+  @moduledoc  """
+  Run application
+  iex> mix run --no-halt
+
+  Run application with observer
+  iex> mix run --no-halt --eval ":observer.start"
+  """
   @impl true
   def start(_type, _args) do
     Logger.info(IO.ANSI.format([:yellow, "starting Application"]))

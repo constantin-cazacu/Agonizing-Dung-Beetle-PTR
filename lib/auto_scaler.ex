@@ -1,5 +1,8 @@
 defmodule AutoScaler do
-  @moduledoc false
+  @moduledoc"""
+  Auto Scaler - actor who monitors the rate of tweets per second and sends
+  instructions to the Pool Supervisor in order to balance the pool of workers
+  """
   use GenServer
   require Logger
 
@@ -10,6 +13,9 @@ defmodule AutoScaler do
     GenServer.start_link(__MODULE__, counter, name: __MODULE__)
   end
 
+  @doc """
+  every tweet calls for an increment to the counter
+  """
   def receive_data() do
     GenServer.cast(__MODULE__, :increment)
   end
@@ -21,8 +27,11 @@ defmodule AutoScaler do
     {:ok, state}
   end
 
+  @doc """
+  private function collecting the number of tweets per second then
+  restarting the counter and doing it repeatedly
+  """
   defp counter_reset() do
-#    collecting the number of tweets per second then restarting the counter
     count_pid = self()
     spawn(fn ->
       Process.sleep(1000)
@@ -34,6 +43,10 @@ defmodule AutoScaler do
     {:noreply, counter + 1}
   end
 
+  @doc """
+  sending the tweet count per second to the Pool Supervisor
+  and reset the counter
+  """
   def handle_cast(:counter_reset, counter) do
     PoolSupervisor.auto_scale(counter)
     counter_reset()
