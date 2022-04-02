@@ -1,8 +1,14 @@
 defmodule PoolSupervisor do
-  @moduledoc false
+  @moduledoc"""
+  Pool Supervisor - a supervising actor whose job is to keep
+  its pool of workers in check, wither increase or decrease it,
+  based on information received from Auto Scaler actor, and restart
+  crashed workers due to panic messages or other errors
+  """
   use DynamicSupervisor
   require Logger
 
+#  client-side functions
   def start_link() do
     supervisor = DynamicSupervisor.start_link(__MODULE__, %{}, name: __MODULE__)
     Logger.info(IO.ANSI.format([:yellow, "starting Pool Supervisor"]))
@@ -17,6 +23,15 @@ defmodule PoolSupervisor do
     :ok
   end
 
+  @doc """
+  based on the argument passed to this function the following are taking place:
+
+  if n > 0 Pool Supervisor will add workers while decreasing the count until
+  it reaches zero
+
+  if n < 0 Pool Supervisor wil remove workers while increasing the count until
+  it reaches zero
+  """
   def start_worker(n) do
     case n do
       n when n > 0 ->
@@ -39,9 +54,13 @@ defmodule PoolSupervisor do
     :noreply
   end
 
+  @doc """
+  function called by Auto Scaler in order to transform the number of tweets received
+  in one second to a number of required workers, if current pool capacity is bigger
+  than required it will be decreased, and increased vice versa
+  """
   def auto_scale(counter) do
     Logger.info(IO.ANSI.format([:magenta, "counter = #{inspect(counter)}"]))
-#    TODO: think of a good 'tweets per worker' ratio
     desired_worker_no = div(counter, 3) + 1 # +1 for good measure
     current_worker_no = get_worker_number()
     difference = desired_worker_no - current_worker_no
@@ -49,10 +68,14 @@ defmodule PoolSupervisor do
     :noreply
   end
 
+  @doc """
+  getting an up-to-date list of the supervised worker
+  """
   def get_worker_list() do
     DynamicSupervisor.which_children(__MODULE__)
   end
 
+#  callbacks
   def init(_) do
     supervisor = DynamicSupervisor.init(max_restarts: 100, max_children: 1000, strategy: :one_for_one)
 #    PoolSupervisor.start_worker(4)

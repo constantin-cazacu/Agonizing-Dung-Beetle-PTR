@@ -2,6 +2,13 @@ defmodule AgonizingDungBeetlePTR do
   use Application
   require Logger
 
+  @moduledoc  """
+  Run application
+  iex> mix run --no-halt
+
+  Run application with observer
+  iex> mix run --no-halt --eval ":observer.start"
+  """
   @impl true
   def start(_type, _args) do
     Logger.info(IO.ANSI.format([:yellow, "starting Application"]))
@@ -29,25 +36,13 @@ defmodule AgonizingDungBeetlePTR do
         id: StreamReader2,
         start: {StreamReader, :start_link, [url2]}
       },
-#      %{
-#        id: LoadBalancer,
-#        start: {LoadBalancer, :start_link, []}
-#      },
-#      %{
-#        id: PoolSupervisor,
-#        start: {PoolSupervisor, :start_link, []}
-#      },
-#      %{
-#        id: AutoScaler,
-#        start: {AutoScaler, :start_link, []}
-#      },
-#      %{
-#        id: Worker,
-#        start: {Worker, :start_link, [1]}
-#      },
+      %{
+        id: HashtagStatsWorker,
+        start: {HashtagsStats, :start_link, []}
+      },
     ]
 
-    opts = [strategy: :one_for_one, max_restarts: 100, name: __MODULE__]
+    opts = [strategy: :one_for_all, max_restarts: 100, name: __MODULE__]
 
     Supervisor.start_link(children, opts)
   end

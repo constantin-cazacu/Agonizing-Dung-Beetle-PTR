@@ -1,5 +1,10 @@
 defmodule LoadBalancer do
-  @moduledoc false
+  @moduledoc"""
+  Load Balancer - distributes the tweet dta to the worker pool
+  in a basic Round Robin fashion based on a index stored in the
+  module's state in order to keep in mind to which worker it has
+  to send the next tweet
+  """
   use GenServer
   require Logger
 
@@ -19,8 +24,18 @@ defmodule LoadBalancer do
     {:ok, state}
   end
 
+  @doc"""
+  sending tweet forwarded from the Stream Reader to
+  worker in a Round Robin fashion
+  tweet 1 -> worker 1
+  tweet 2 -> worker 2
+  tweet 3 -> worker 3
+  ...
+  tweet 8 -> worker 1
+  tweet 9 -> worker 2
+  ...
+  """
   def handle_cast({:receive_tweet, tweet}, index) do
-#    sending tweet to worker in a Round Robin fashion
     workers = PoolSupervisor.get_worker_list()
     if length(workers) > 0 do
       {_, worker_pid, _, _} = Enum.at(workers, rem(index, length(workers)))
