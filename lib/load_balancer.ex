@@ -24,18 +24,18 @@ defmodule LoadBalancer do
     {:ok, state}
   end
 
+  @doc"""
+  sending tweet forwarded from the Stream Reader to
+  worker in a Round Robin fashion
+  tweet 1 -> worker 1
+  tweet 2 -> worker 2
+  tweet 3 -> worker 3
+  ...
+  tweet 8 -> worker 1
+  tweet 9 -> worker 2
+  ...
+  """
   def handle_cast({:receive_tweet, tweet}, index) do
-    @doc"""
-    sending tweet forwarded from the Stream Reader to
-    worker in a Round Robin fashion
-    tweet 1 -> worker 1
-    tweet 2 -> worker 2
-    tweet 3 -> worker 3
-    ...
-    tweet 8 -> worker 1
-    tweet 9 -> worker 2
-    ...
-    """
     workers = PoolSupervisor.get_worker_list()
     if length(workers) > 0 do
       {_, worker_pid, _, _} = Enum.at(workers, rem(index, length(workers)))

@@ -7,16 +7,12 @@ defmodule StreamReader do
   def start_link(url) do
     Logger.info(IO.ANSI.format([:yellow,"starting Stream Reader"]))
     Logger.info(url)
-    @doc """
-    spawns get_tweet function from the given module,
-    links it to current process
-    """
+#    spawns get_tweet function from the given module,
+#    links it to current process
     handle = spawn_link(__MODULE__, :get_tweet, [])
     {:ok, pid} = EventsourceEx.new(url, stream_to: handle)
-    @doc"""
-    spawns check_connection function from the given module,
-    links it to current process
-    """
+#    spawns check_connection function from the given module,
+#    links it to current process
     spawn_link(__MODULE__, :check_connection, [url, handle, pid])
     {:ok, self()}
   end

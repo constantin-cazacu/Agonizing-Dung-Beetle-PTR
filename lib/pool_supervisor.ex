@@ -19,9 +19,6 @@ defmodule PoolSupervisor do
     DynamicSupervisor.count_children(__MODULE__).active
   end
 
-  @doc """
-  the scenario where the required number of workers to be added/removed is zero
-  """
   def start_worker(0) do
     :ok
   end
