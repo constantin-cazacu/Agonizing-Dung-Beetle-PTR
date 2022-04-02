@@ -27,6 +27,10 @@ defmodule Worker do
   if everything is good then we send the data to the
   Hashtag Stats actor and print the tweet a to the console
   """
+  def receive_tweet(pid, tweet) do
+    GenServer.cast(pid, {:forward_tweet, tweet})
+  end
+
   def handle_cast({:forward_tweet, tweet}, state) do
     if tweet == "{\"message\": panic}" do
       Process.exit(self(), :kill)
@@ -35,7 +39,8 @@ defmodule Worker do
     {:ok, tweet_data} = Poison.decode(tweet)
     tweet_msg = tweet_data["message"]["tweet"]["text"]
     Process.sleep(Enum.random(50..500))
-#    IO.puts("Worker #{inspect(self())} says #{inspect(String.slice(tweet_msg, 0..50))}...")
+
+    IO.puts("Worker #{inspect(self())} says #{inspect(String.slice(tweet_msg, 0..50))}...")
 
     {:noreply, state}
   end
